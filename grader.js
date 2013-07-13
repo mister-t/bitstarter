@@ -83,6 +83,7 @@ if(require.main == module) {
   var checkJson, outJson;
   if (program.url) {
     $ = cheerio.load(getUrlData(program.url));
+    checkJson = checkFile($, program.checks);
   } else {
     checkJson = checkHtmlFile(program.file, program.checks);
   }
