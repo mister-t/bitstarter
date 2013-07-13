@@ -60,10 +60,10 @@ var checkFile = function ($, checksfile) {
     return out;
 };
 
-var getUrlData = function (url) {
+var getUrlData = function (url, cb) {
   rest.get(url).on('complete', function(data) {
     //console.log(data); // auto convert to object
-    return data
+    return cb(data)
   });
 };
 
@@ -82,13 +82,17 @@ if(require.main == module) {
 	//console.log('url = ' + program.url);
   var checkJson, outJson;
   if (program.url) {
-    $ = cheerio.load(getUrlData(program.url));
-    checkJson = checkFile($, program.checks);
+    getUrlData(program.url, function (data) {
+	    $ = cheerio.load(data);
+	    checkJson = checkFile($, program.checks);
+	  outJson = JSON.stringify(checkJson, null, 4);
+	  console.log(outJson);
+    });
   } else {
     checkJson = checkHtmlFile(program.file, program.checks);
-  }
   outJson = JSON.stringify(checkJson, null, 4);
   console.log(outJson);
+  }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
